@@ -1,0 +1,840 @@
+% !TEX program = xelatex
+% ============================================================
+%  CS 186 FINAL CHEAT SHEET — Spring 2026 — 3 sheets (6 pages)
+%  XeLaTeX REQUIRED. Upload ShantellSans variable .ttf to Overleaf.
+%  Compiler: Menu → Compiler → XeLaTeX
+% ============================================================
+\documentclass[8pt,letterpaper]{article}
+\usepackage[margin=3mm, landscape]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fontspec}
+\usepackage{tcolorbox}
+\usepackage{array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,shapes,positioning}
+
+% ============================================================
+% FONT — Shantell Sans variable TTF (upload to Overleaf root)
+% ============================================================
+\setmainfont{ShantellSans_BNCE_INFM_SPAC_ital_wght_}[
+  Extension      = .ttf,
+  Path           = ./,
+  RawFeature     = {axis={wght=360,BNCE=-100,INFM=100,SPAC=0}},
+  BoldFont       = ShantellSans_BNCE_INFM_SPAC_ital_wght_.ttf,
+  BoldFeatures   = {RawFeature={axis={wght=700,BNCE=-100,INFM=100,SPAC=0}}},
+  ItalicFont     = ShantellSans_BNCE_INFM_SPAC_ital_wght_.ttf,
+  ItalicFeatures = {RawFeature={axis={wght=360,BNCE=-100,INFM=100,SPAC=0,ital=1}}},
+  BoldItalicFont       = ShantellSans_BNCE_INFM_SPAC_ital_wght_.ttf,
+  BoldItalicFeatures   = {RawFeature={axis={wght=700,BNCE=-100,INFM=100,SPAC=0,ital=1}}},
+]
+% FALLBACK (uncomment if variable font fails):
+% \setmainfont{Shantell_Sans-Bouncy_Bold}[Extension=.otf,Path=./,
+%   BoldFont=Shantell_Sans-Bouncy_Bold,
+%   ItalicFont=Shantell_Sans-Bouncy_Bold_Italic,
+%   BoldItalicFont=Shantell_Sans-Bouncy_Bold_Italic]
+\setmonofont{DejaVu Sans Mono}[Scale=0.72]
+
+% ============================================================
+% LAYOUT
+% ============================================================
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.25pt}
+\setlength{\columnsep}{3mm}
+\linespread{0.80}
+\pagestyle{empty}
+\setlist[itemize]{leftmargin=*,nosep,topsep=0pt,itemsep=0pt}
+\setlist[enumerate]{leftmargin=*,nosep,topsep=0pt,itemsep=0pt}
+
+% Sizes
+\newcommand{\tinyfont}{\fontsize{4.8}{5.5}\selectfont}
+\newcommand{\smallfont}{\fontsize{5.5}{6.2}\selectfont}
+\newcommand{\titlefont}{\fontsize{6.5}{7.5}\selectfont}
+\newcommand{\codefont}{\fontsize{4.2}{4.8}\selectfont\ttfamily}
+
+% Section headers
+\titleformat{\section}{\bfseries\tinyfont\color{blue!75!black}\MakeUppercase}{}{0em}{}[{\vspace{-2pt}\color{blue!50!black}\hrule}\vspace{0.5pt}]
+\titlespacing*{\section}{0pt}{2.5pt}{0.5pt}
+\titleformat{\subsection}{\bfseries\tinyfont\color{teal!80!black}}{}{0em}{}
+\titlespacing*{\subsection}{0pt}{1.5pt}{0pt}
+
+% Colored boxes
+\newtcolorbox{ansbox}{
+  colback=blue!8!white, colframe=blue!50!black,
+  boxrule=0.3pt, arc=0pt,
+  left=1pt,right=1pt,top=0.5pt,bottom=0.5pt,
+  fontupper=\tinyfont\bfseries\color{blue!80!black},
+  before skip=0.5pt, after skip=0.5pt,
+}
+\newtcolorbox{solbox}{
+  colback=gray!5!white, colframe=gray!40!black,
+  boxrule=0.2pt, arc=0pt,
+  left=1pt,right=1pt,top=0.5pt,bottom=0.5pt,
+  fontupper=\tinyfont\color{gray!70!black},
+  before skip=0.3pt, after skip=0.3pt,
+}
+\newtcolorbox{warnbox}{
+  colback=orange!8!white, colframe=orange!60!black,
+  boxrule=0.2pt, arc=0pt,
+  left=1pt,right=1pt,top=0.5pt,bottom=0.5pt,
+  fontupper=\tinyfont\color{orange!80!black},
+  before skip=0.3pt, after skip=0.3pt,
+}
+\newtcolorbox{greenbox}{
+  colback=green!6!white, colframe=green!50!black,
+  boxrule=0.2pt, arc=0pt,
+  left=1pt,right=1pt,top=0.5pt,bottom=0.5pt,
+  fontupper=\tinyfont\color{green!60!black},
+  before skip=0.3pt, after skip=0.3pt,
+}
+
+% Shortcuts
+\newcommand{\key}[1]{\textbf{\color{red!70!black}#1}}
+\newcommand{\ans}[1]{\textbf{\color{blue!80!black}#1}}
+\newcommand{\warn}[1]{\textbf{\color{orange!85!black}#1}}
+\newcommand{\sql}[1]{{\codefont #1}}
+\newcommand{\qref}[1]{{\fontsize{3.5}{4}\selectfont\color{purple!60!black}[#1]}}
+\newcommand{\proj}{\ensuremath{\pi}}
+\newcommand{\sel}{\ensuremath{\sigma}}
+\newcommand{\agg}{\ensuremath{\gamma}}
+\newcommand{\jn}{\ensuremath{\bowtie}}
+\newcommand{\ren}{\ensuremath{\rho}}
+
+% ============================================================
+\begin{document}\tinyfont
+% ====================================================================
+%  PAGE 1 — SQL, RELATIONAL ALGEBRA, QUERY OPTIMIZATION
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}CS 186 FINAL — SQL + RA + QUERY OPT}}
+\vspace{1pt}
+
+\section{SQL Execution Order}
+\key{Order:} FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT
+\begin{itemize}
+  \item WHERE: before grouping (no aggregates allowed here!)
+  \item HAVING: after grouping (aggregates OK)
+  \item Can't use SELECT alias in WHERE (alias not yet defined)
+  \item Every non-agg col in SELECT must be in GROUP BY
+  \item GROUP BY cols NOT in SELECT is valid
+\end{itemize}
+
+\section{SQL Patterns}
+\key{Date overlap:} \sql{start\_date <= rangeEnd AND end\_date >= rangeStart}
+
+\key{Zero-count outer join:} Use LEFT JOIN to include rows with no matches. Put filter on joined table INSIDE a subquery \emph{before} the join (not in outer WHERE). \qref{Sp26 MT1 Q1.1}
+\begin{ansbox}
+\sql{FROM teams t LEFT JOIN (SELECT * FROM games g WHERE g.season=1965 OR g.season=1966) ON t.id=g.homeTeamID}\\
+\warn{NOT:} \sql{FROM teams LEFT JOIN games ON ... WHERE season=1965} (kills NULL rows)
+\end{ansbox}
+
+\key{"All X" pattern:}
+\sql{GROUP BY s HAVING COUNT(DISTINCT x) = (SELECT COUNT(*) FROM X WHERE ...)}\\
+\warn{Must use DISTINCT to avoid double-counting!} \qref{Fa24 MT1 Q1b}
+
+\key{UNION removes dups; UNION ALL keeps them.}
+
+\key{RIGHT JOIN + INNER JOIN = INNER JOIN} (NULLs from RIGHT eliminated by inner). \qref{Sp25 MT1 Q1c}
+
+\key{FULL OUTER + WHERE NOT NULL rows = LEFT JOIN} effect.
+
+\section{SQL Validity Traps}
+(1) Non-agg SELECT col not in GROUP BY → \ans{invalid}\\
+(2) Alias used in WHERE → \ans{invalid}\\
+(3) Agg func in WHERE → \ans{invalid}\\
+(4) HAVING without GROUP BY → \ans{invalid}\\
+(5) GROUP BY without agg → \ans{VALID}\\
+(6) \sql{COUNT(DISTINCT col)} skips NULLs → \ans{True}
+
+\section{RA Operator Symbols}
+$\proj$ = project (SELECT cols)\quad $\sel$ = select (WHERE filter)\\
+$\agg_{g,\text{AGG}}$ = GROUP BY + aggregate\quad $\jn$ = join\quad $\ren$ = rename\\
+$\times$ = cross product\quad $-$ = difference\quad $\cup$ = union
+
+\key{Compilation order (inside-out, bottom-up):}
+\begin{enumerate}
+  \item Base tables (FROM)
+  \item Cross product / joins (JOIN ... ON)
+  \item Selections (WHERE) → $\sel$
+  \item Group-by + agg (GROUP BY / AGG) → $\agg$
+  \item Projection (SELECT cols) → $\proj$
+  \item Rename aliases → $\ren$
+\end{enumerate}
+
+\section{SQL $\to$ RA Translation}
+\key{Simple WHERE:}\\
+\sql{SELECT title FROM Movies WHERE year>2000}\\
+$\Rightarrow \proj_{\text{title}}\bigl(\sel_{\text{year}>2000}(\text{Movies})\bigr)$
+
+\key{JOIN + GROUP BY + AVG:}\\
+\sql{SELECT m.title, AVG(score) FROM Movies m JOIN Reviews r ON m.id=r.mid GROUP BY m.id, m.title}\\
+$\Rightarrow \proj_{\text{title},\text{AVG}}\bigl(\agg_{m.id,m.title,\,\text{AVG(score)}}(Movies \jn_{m.id=r.mid} Reviews)\bigr)$
+\begin{warnbox}
+$\agg$ gets BOTH group-by cols AND the aggregate expression.\\
+Outer $\proj$ keeps only the display columns.
+\end{warnbox}
+
+\key{LLM operator:} Treated as part of selection or projection condition.\\
+\sql{WHERE LLM(...)="Yes"} compiles to $\sel_{LLM(...)=Yes}$\\
+\sql{SELECT AVG(LLM(...))} compiles into the $\agg$ aggregate column.
+
+\begin{ansbox}
+Sp25 Q1.2 answer: Ex2 compiles to \textbf{B}:\\
+$\proj_{m.title,AVG(LLM)}\bigl(\agg_{m.id,m.title,AVG(LLM)}(Movies \jn_{m.id=r.id} Reviews)\bigr)$
+\end{ansbox}
+
+\section{LLM Optimization Rules}
+\key{Selection pushdown} = apply cheap filter first, THEN LLM. Fewer LLM calls. \qref{Q1.5→D}
+
+\key{LLM pull-up} = move LLM selection later so cheap predicates run first. (Same result --- reduces LLM calls since fewer rows reach LLM.) \qref{Q1.5→D}
+
+\key{Pull-up through join: CANNOT if} LLM output is part of join condition. \qref{Q1.6→A}
+
+\key{Cross join + pull-up costs MORE:} cross join inflates row count → more LLM calls. \qref{Q1.7→B}
+
+\key{Pre-sort for caching:} Sort on the column INSIDE the LLM prompt string (e.g., \sql{movie\_info}) to get adjacent calls sharing a prefix. \qref{Q1.8→B}
+
+\key{Hash vs sort for caching:} Hashing doesn't guarantee order within buckets → prefix-sharing LLM calls may NOT be adjacent. \qref{Q1.10→A,B}
+
+\key{General QO techniques that help:} Selection pushdown, Projection pushdown. NOT: Selection pull-up, Projection pull-up, Materialization. \qref{Q1.4→A,C}
+
+\section{Selinger / System R Optimizer}
+\begin{itemize}
+  \item Only considers \textbf{left-deep} join trees (no bushy, no right-deep)
+  \item Never uses Cartesian products unless forced (no join predicate between tables)
+  \item \textbf{Pass $k$:} build all $k$-table left-deep plans from $(k{-}1)$-table plans
+  \item Keeps cheapest plan per (subset, \textbf{interesting order}) pair
+  \item \textbf{Interesting order:} a sort order useful for a later join, ORDER BY, or GROUP BY. \warn{Aggregates (SUM, AVG) do NOT create interesting orders.}
+\end{itemize}
+
+\key{3-table left-deep orders} for $\{A,B,C\}$:\\
+$(A\jn B)\jn C$, $(B\jn A)\jn C$, $(A\jn C)\jn B$,\\
+$(C\jn A)\jn B$, $(B\jn C)\jn A$, $(C\jn B)\jn A$\\
+\warn{Not considered:} $A\jn(B\jn C)$ (right-deep)
+
+\begin{ansbox}
+Sp25 Q1.3: 3-way join Users, Reviews, Movies with WHERE m.genre="action". Considered by Selinger: \textbf{A only:} (Movies\bowtie Reviews)\bowtie Users.\\
+Rejected: B,D = right-deep. C = Movies\bowtie Users has NO join pred → cross product.
+\end{ansbox}
+
+\section{Selectivity Formulas}
+$\sel_{x=v}$: $1/V(x)$ \quad $\sel_{x>v}$: $(max-v)/(max-min)$ \quad $\sel_{x\text{ BETWEEN}a,b}$: $(b-a)/(max-min)$
+
+AND: multiply selectivities. OR: add them (assume independence).
+
+Join result size: $|R|\cdot|S|\,/\,\max(V(R,x),\,V(S,y))$
+
+Ex: 4 sports, 10 names → \sql{sport=bball AND name=James}: $1/4 \cdot 1/10 = 1/40$
+
+\end{multicols*}
+\newpage
+
+% ====================================================================
+%  PAGE 2 — EXTERNAL SORT + EXTERNAL HASH
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}EXTERNAL SORT AND HASHING}}
+\vspace{1pt}
+
+\section{External Merge Sort}
+\key{Notation:} $N$ = data pages, $B$ = buffer pages.
+
+\key{Pass 0 (create runs):} Read $B$ pages, sort in memory, write back.\\
+$\Rightarrow \lceil N/B \rceil$ sorted runs, each $B$ pages long.
+
+\key{Each merge pass:} Merges $B-1$ runs at a time (1 page per run + 1 output page).\\
+Runs after pass $k$: $\lceil \text{prev}/({B-1}) \rceil$
+
+\key{Total passes:}
+\begin{ansbox}
+$\#\text{passes} = 1 + \lceil\log_{B-1}\lceil N/B\rceil\rceil$ \qquad\qquad \textbf{Total I/O} $= 2N \times \#\text{passes}$
+\end{ansbox}
+
+\key{Min buffer for 2-pass sort:}
+\begin{ansbox}
+$B \times (B-1) \ge N \;\Rightarrow\; B \approx \sqrt{N}$\\
+Ex: N=400: $B(B-1)\ge400 \Rightarrow B=\mathbf{21}$ \qref{MT2 Q1.3g}
+\end{ansbox}
+
+\key{Step-by-step examples:}
+\begin{ansbox}
+N=503, B=17: P0→$\lceil503/17\rceil=30$ runs. P1→$\lceil30/16\rceil=2$ runs. P2→1. \textbf{3 passes. I/O=2x503x3=3018} \qref{Sp25 Final Q3}
+\end{ansbox}
+
+\begin{ansbox}
+Alternating machines (Tae B=4, Pranav B=10):\\
+P0 (Tae,4): $\lceil400/4\rceil=100$ runs.\\
+P1 (Pranav,10): $\lceil100/9\rceil=12$ runs.\\
+P2 (Tae,4): $\lceil12/3\rceil=4$ runs.\\
+P3 (Pranav,10): $\lceil4/9\rceil=1$ run.\\
+\textbf{4 passes. I/O = 2x400x4 = 3200} \qref{MT2 Q1.3a-e}
+\end{ansbox}
+
+\begin{ansbox}
+Combined B=14: $\lceil400/14\rceil=29$ runs. $\lceil29/13\rceil=3$. $\lceil3/13\rceil=1$. \textbf{3 passes.} \qref{MT2 Q1.3f}
+\end{ansbox}
+
+\key{SMJ optimization (pipelining):} In the final sorting pass of a relation that produces $\le B-1$ sorted runs, stream directly into the merge-join step instead of writing to disk first.
+\begin{ansbox}
+T=4pp, P=50pp, B=4 (SMJ without opt):\\
+Sort T: 1 pass → 8 I/Os ($\lceil4/4\rceil=1$ run already)\\
+Sort P: P0=$\lceil50/4\rceil=13$ runs → P1=$\lceil13/3\rceil=5$ → P2=$\lceil5/3\rceil=2$ → P3=1. \textbf{4 passes = 400 I/Os}\\
+Merge: 4+50=54 I/Os. \textbf{Total = 462} \qref{MT2 Q2.3a}\\
+Savings from opt: P has 2 runs after P2 → pipeline P3 into merge, saving $2\times50=\mathbf{100}$ I/Os \qref{MT2 Q2.3b}
+\end{ansbox}
+
+\section{Sort Trivia (T/F)}
+\begin{itemize}
+  \item Halving $B$ doubles I/O? \ans{F} --- passes might not change
+  \item Doubling $B$ always decreases I/O? \ans{F} --- passes can stay same
+  \item Sort cost depends on which column you sort on? \ans{F} --- cost = $f(N,B)$ only \qref{Sp25 Q1.9}
+\end{itemize}
+
+\section{External Hashing}
+\key{Partitioning phase:} Use $B-1$ buckets per pass. Reads + writes ALL data each pass.
+
+\key{Conquer phase:} 1 final pass --- read each partition into memory and hash/aggregate.
+
+\key{Recursion:} After 1 partition pass, each bucket has $\approx N/(B-1)$ pages. Recurse until each bucket $\le B$ pages.
+
+\key{Total passes (uniform hash):}
+\begin{ansbox}
+$\#\text{partition passes} = \lceil\log_{B-1}\lceil N/B\rceil\rceil$ \quad + 1 conquer pass\\
+Total I/O $= 2N \times \#\text{passes}$ (read+write each pass)
+\end{ansbox}
+
+\begin{ansbox}
+N=686, B=7: $\lceil\log_6\lceil686/7\rceil\rceil = \lceil\log_6 98\rceil = \lceil2.56\rceil = 3$ partition passes + 1 conquer = \textbf{4 passes total}. \qref{Sp25 Q3}
+\end{ansbox}
+
+\key{Non-uniform partitions (key insight):} Each partition is handled independently. Larger partitions need more passes.
+
+\begin{ansbox}
+N=200, B=5, P1=100pp, P2=50pp, P3=30pp, P4=20pp after Pass 1:\\
+P1 (100pp): $100/4=25$pp per sub-bucket → $25/4\approx7$pp → conquer. 4 more passes.\\
+P2 (50pp): $50/4=13$pp → conquer. 3 more passes.\\
+P3 and P4: each needs \textbf{same} \#passes → \ans{True}. \qref{MT2 Q1.2d}\\
+\textbf{Pass 2 writes:} 100+52+32+20 = \textbf{204pp}. \qref{MT2 Q1.2c}\\
+\textbf{Total I/Os:} 1924 (range 1901--2000). \qref{MT2 Q1.2e}
+\end{ansbox}
+
+\section{Hash Trivia (T/F)}
+\begin{itemize}
+  \item Same-key records fit in memory at end of hashing? \ans{T} --- within one partition
+  \item Different hash function per partition? \ans{T}
+  \item Hash I/O suffers when: \ans{A (many dups)} and \ans{C (non-uniform hash)}
+  \item Hash always $\le$ sort I/O? \ans{F} --- neither always better \qref{MT2 Q1.1f}
+\end{itemize}
+
+\section{GHJ Min Buffer Formula}
+\key{No recursive partitioning when:} Each partition of smaller table fits in $B-2$ pages.
+\begin{ansbox}
+$\dfrac{[T]}{B-1} \le B-2 \;\Rightarrow\; [T] \le (B-1)(B-2)$\\
+T=4pp: $(B-1)(B-2)\ge4 \Rightarrow B=\mathbf{4}$ minimum \qref{MT2 Q2.2a}
+\end{ansbox}
+
+\begin{ansbox}
+GHJ fails: need $>B-2=3$pp from BOTH tables with same key (B=5).\\
+T (4r/pg): need $>12$ rec $\Rightarrow \ge13$ dupes in T.\\
+P (8r/pg): need $>3$pp = $>24$ rec $\Rightarrow \ge25$ dupes in P.\\
+Min to guarantee failure: $13+25=\mathbf{38}$ \qref{MT2 Q2.2c}
+\end{ansbox}
+
+\end{multicols*}
+\newpage
+
+% ====================================================================
+%  PAGE 3 — JOINS + B+ TREES
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}JOIN ALGORITHMS + B+ TREES}}
+\vspace{1pt}
+
+\section{Join I/O Cost Formulas}
+\key{Notation:} $[R]$ = pages of R, $|R|$ = tuples in R, $B$ = buffer pages.
+
+{\codefont\begin{tabular}{@{}l|l@{}}
+\textbf{Join} & \textbf{I/O Cost} \\
+\hline
+SNLJ & $[R] + |R|\cdot[S]$ (R outer, 1 tuple at a time)\\
+PNLJ & $[R] + [R]\cdot[S]$ (page at a time)\\
+BNLJ & $[R] + \lceil[R]/(B{-}2)\rceil\cdot[S]$ (R outer)\\
+INLJ & $[R] + |R|\cdot(\text{index lookup cost})$\\
+SMJ  & $\text{sort}(R) + \text{sort}(S) + [R] + [S]$\\
+GHJ  & $3([R]+[S])$ baseline (no recursive partition)\\
+\end{tabular}}
+
+\key{BNLJ:} $B-2$ pages outer, 1 page inner buffer, 1 output. Put SMALLER table outer.
+
+\key{INLJ lookup costs:} Alt-2 = $h+1$. Alt-1 = $h$. Unclustered Alt-2: up to 1 I/O per matching tuple.
+
+\key{GHJ full formula:} Read+write both sides (partition) + read both sides (probe) = 3 passes. Recursive: $+2([R]+[S])$ per extra pass.
+
+\key{BHJ (Broadcast):} Broadcast small table to all nodes. Network $=|small|\times(M-1)$.
+
+\section{Join True/False Gotchas}
+\key{BNLJ:} \qref{MT2 Q2.1a}
+\begin{itemize}
+  \item More B always decreases cost? \ans{F} --- plateaus when $[R]\le B-2$
+  \item Smaller outer never worse? \ans{F} --- counterex: B=4, R=3pp, S=4pp: R-outer=11, S-outer=10
+  \item Requires equality? \ans{F} --- works on any predicate
+  \item $[R]+2\le B \Rightarrow$ scan S once? \ans{T}
+  \item $B=3$: BNLJ=PNLJ? \ans{T} (block=1 page)
+  \item $B=2$: BNLJ=PNLJ? \ans{F} (BNLJ needs $\ge3$)
+\end{itemize}
+
+\key{INLJ:} None of the "always cheaper" statements are true. \ans{F} for all. \qref{MT2 Q2.1b}
+
+\section{GHJ Full Example}
+\begin{ansbox}
+T=4pp (4r/pg), P=50pp (8r/pg), B=5, join on staff\_id:\\
+Partition: T: 4R+4W=8. P: 50R+52W=102.\\
+Probe: 4+52=56.\\
+\textbf{Total = 8+102+56 = 166 I/Os} \qref{MT2 Q2.2b}
+\end{ansbox}
+
+\section{Join Algorithm Selection}
+\begin{enumerate}
+  \item Both sorted on join key → SMJ (no sort cost)
+  \item Index on inner → INLJ
+  \item Outer fits in buffer ($[R]\le B-2$) → BNLJ (1 inner scan)
+  \item Equality, no order needed → GHJ
+  \item Default → BNLJ with smaller outer
+\end{enumerate}
+
+\section{B+ Tree Structure}
+\key{Order $d$:}
+\begin{itemize}
+  \item Internal (non-root): $d$ to $2d$ keys; $d+1$ to $2d+1$ ptrs
+  \item Leaf: $d$ to $2d$ entries
+  \item Root: 1 to $2d$ keys
+\end{itemize}
+
+\key{Alternatives:}
+\begin{itemize}
+  \item \textbf{Alt-1:} record IN leaf. Always clustered. Only 1 per table.
+  \item \textbf{Alt-2:} (key, RID) in leaf. +1 I/O for data page. Project 2 = Alt-2.
+  \item \textbf{Alt-3:} (key, list of RIDs) in leaf. Good for many duplicates.
+\end{itemize}
+
+\key{Clustered:} data sorted on index key. Good for range. Degrades after inserts.
+
+\key{I/O costs:} Alt-2 point query: $h+1$. Alt-1: $h$. Insert (no split): $h+1$. Full scan: leaf pages only.
+
+\key{Index design:} Only 1 Alt-1 per table. Two clustered = duplicate data. \textbf{Valid:} Alt-1 + unclustered Alt-2; Clustered Alt-2 + unclustered Alt-2.
+
+\section{Min/Max Keys by Height}
+$d=2$, height 1: up to $2d=4$ keys in root. Height 2: up to $5\times4=20$ keys. Min height for 15 keys: $h=2$ (since root max=4 $<$ 15). Wait: with $d=2$, root can have up to $2d=4$ keys and $2d+1=5$ children, each leaf holds $2d=4$ entries → max keys at height 2 = $5\times4=20\ge15$, so $h=2$.
+
+Min entries for height 3 ($d=2$): $2\times3\times2=12$ (root min 2 ptrs → 2 inners, each min 3 ptrs → 6 leaves, each min 2 entries = 12). \qref{Fa24 MT1 Q5c}
+
+Max entries height 3: $(2d+1)^2\times2d = 25\times4=100$... actually $5\times5\times4=100$... more precisely $(2d+1)^{h-1}\times2d = 5^2\times4=100$.
+
+\section{Alt-3 Overflow}
+When leaf fills ($2d$ RID slots), create overflow page (1 write, 0 reads). Lookup must follow chain.
+\begin{itemize}
+  \item Full scans use index? \ans{F} (read leaf pages directly)
+  \item Quadruple records without height increase? \ans{T} (dups to overflow)
+\end{itemize}
+
+\section{KD Trees vs B+ Trees}
+\begin{itemize}
+  \item Same height → same for exact key lookup
+  \item KD wins: nearest-neighbor, range on secondary dim
+  \item B+ wins: range on primary sort key
+  \item Extra dim not in KD → check ALL points
+  \item Full scan beats both when returning most data
+\end{itemize}
+
+\key{NN backtracking:} Traverse to leaf → set bestSoFar → backtrack: if dist(split-plane, key) $<$ bestSoFar distance → explore other subtree.
+
+\begin{ansbox}
+KD get() implementation \qref{Sp26 MT1 Q5}:\\
+InnerNode.get: if left.boundary.encloses(key) return left.get(key) else right.get(key).\\
+LeafNode.get: return this.\\
+InnerNode.getNearest: firstChild=encloses(key)?left:right. If first.boundary.dist(key)<best.dist(key): best=first.getNearest(key,best). If second.boundary.dist(key)<best.dist(key): best=second.getNearest(key,best).
+\end{ansbox}
+
+\end{multicols*}
+\newpage
+
+% ====================================================================
+%  PAGE 4 — BUFFER MANAGEMENT + CONCURRENCY / LOCKING
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}BUFFER MANAGEMENT + CONCURRENCY}}
+\vspace{1pt}
+
+\section{Buffer Policies}
+\key{LRU:} Evict least recently used. Good for popular pages. \warn{Bad: sequential flood.}
+
+\key{MRU:} Evict most recently used. Good for sequential/repeated scans.
+
+\key{Clock:} Ring + ref bit. Access→set bit=1. Sweep: bit=1→set 0; bit=0→evict.
+
+\key{Random access:} LRU = MRU = any policy. \qref{MT1 Q4; Fa24 MT1}
+
+\key{Popular subset} (40 hot in 50-buffer): LRU wins --- keeps hot pages. \qref{Fa24 MT1 Q3b-iii}
+
+\key{No-reread query:} All policies equal. \qref{Fa24 MT1 Q4g}
+
+\section{LRU-K}
+\key{Idea:} Evict page whose K-th most recent access was furthest in the past.
+
+\key{For B+ tree leaf scans:} LRU-K is \ans{Better} --- keeps root/internal nodes longer. \qref{MT2 Q4.6}
+
+\key{LRU-K always better?} \ans{False} \qref{MT2 Q4.5}
+
+\begin{ansbox}
+Clock approx for LRU-K \qref{MT2 Q4.7}:\\
+Entry: init counter=\ans{1}. Hit: increment (cap K). Evict if counter=\ans{0}. Else: decrement by 1.\\
+Implementation change: \ans{B} --- store K most recent access times; evict page with oldest K-th access.
+\end{ansbox}
+
+\section{ACID Properties}
+\key{A}tomicity: all-or-nothing. \key{C}onsistency: valid states only. \key{I}solation: appear serial. \key{D}urability: commits survive crashes.
+
+\begin{ansbox}
+ACID violations \qref{MT2 Q5.1}:\\
+Negative quantity: \ans{C}. \quad 2 of 2 used → 0: \ans{E (None)}.\\
+Eve sees partial trade: \ans{A or C}. \quad Committed trade invisible: \ans{D}.
+\end{ansbox}
+
+\section{Lock Types and Compatibility}
+Hierarchy: DB → Tables → Pages → Records\\
+IS=intent-shared, IX=intent-exclusive, S=shared, SIX=S+IX, X=exclusive
+
+{\fontsize{4.2}{5}\selectfont\begin{tabular}{@{}c|ccccc@{}}
+\textbf{held/req} & IS & IX & S & SIX & X \\
+\hline
+IS  & Y & Y & Y & Y & N \\
+IX  & Y & Y & N & N & N \\
+S   & Y & N & Y & N & N \\
+SIX & Y & N & N & N & N \\
+X   & N & N & N & N & N \\
+\end{tabular}}
+
+\key{Intent rule:} To take S on resource → hold IS or IX on ALL ancestors. To take X → hold IX or SIX on ALL ancestors. SIX = read whole + write some children.
+
+\begin{ansbox}
+Sp25 Q4.3: S lock on P1 (read all data on P1):\\
+DB=\ans{IS}, T1=\ans{IS}, P1=\ans{S}, R1=\ans{no lock}
+\end{ansbox}
+
+\begin{ansbox}
+MT2 Q5.4: Start fresh. Request S on record1:\\
+→ Changed: \ans{DB(IS), T1(IS), P1(IS), record1(S)}\\
+Then X on page2: → Changed: \ans{page2(X), T1(IS→IX), DB(IS→IX)}\\
+Then X on table1: → Changed: \ans{table1(→X), RELEASE P1,P2,record1} (X on table covers all descendants)
+\end{ansbox}
+
+\key{Without intent locks:} X on T1 must check ALL descendants + ancestors. \qref{Sp25 Q4.4}
+
+\section{2PL and Serializability}
+\key{2PL:} grow-only then shrink-only. Guarantees conflict-serializable. Does NOT prevent cascading aborts.
+
+\key{Strict 2PL:} hold all locks until commit/abort. Prevents cascading aborts. Release bottom-up.
+
+\key{Conflict types (on same object):} W-R, R-W, W-W. (R-R = no conflict.)
+
+\key{Conflict graph:} Edge $T_i\to T_j$ if $T_i$ op conflicts and precedes $T_j$ op. DAG = conflict-serializable.
+
+\section{Deadlock}
+\key{Detection:} waits-for graph. Cycle = deadlock.
+
+\key{Avoidance aborts MORE} transactions than detection.
+
+\key{Wait-Die:} $T_i$ wants lock $T_j$ holds: higher-priority $T_i$ WAITS; lower-priority $T_i$ DIES.
+
+\key{Wound-Wait:} $T_i$ wants lock $T_j$ holds: higher-priority $T_i$ WOUNDS $T_j$ (aborts it); lower-priority $T_i$ WAITS.
+
+\begin{ansbox}
+MT2 Q5.3a (Wait-Die, T1>T2>T3): T3 wants W(A) held by T2 → T3 lower → \ans{T3 aborts (C)}
+\end{ansbox}
+
+\begin{ansbox}
+MT2 Q5.3b (Wound-Wait): T1 wants W(A) from T2 → T1 higher → \ans{T2 wounded (aborts)}.\\
+T3 read from T2's uncommitted write → cascading abort → \ans{T3 also aborts}. Ans: B,C.
+\end{ansbox}
+
+\begin{ansbox}
+Equal priority Wait-Die: must abort one to prevent deadlock. Can abort T1(A), T2(B), or both(C). Letting T1 wait(D) may deadlock. \qref{Sp25 Q4.2b: A,B,C all valid}
+\end{ansbox}
+
+\begin{ansbox}
+Deadlock trace Sp25 Q4.2a: T1:X(A)✓ T2:S(B)✓ T3:S(B)✓ T4:S(C)✓ T1:X(B)→wait\{T2,T3\} T2:S(D)✓ T3:X(C)→wait T4 T4:X(B)→wait\{T2,T3\}.\\
+Cycle: T3→T4→T3. Waits-for: T1→T2(A), T1→T3(B), T3→T4(I), T4→T2(K), T4→T3(L). \ans{A,B,I,K,L}
+\end{ansbox}
+
+\section{MVCC}
+\begin{itemize}
+  \item Write at $t$: new version with $W\_ts=t$
+  \item Read at $t$: latest version with $W\_ts\le t$
+  \item Write at $t$: need $R\_ts(X)\le t$ AND $W\_ts(X)\le t$; else abort
+  \item Reads never block writes; writes never block reads
+\end{itemize}
+
+\end{multicols*}
+\newpage
+
+% ====================================================================
+%  PAGE 5 — ARIES RECOVERY + 2PC
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}ARIES RECOVERY + 2-PHASE COMMIT}}
+\vspace{1pt}
+
+\section{Buffer Policies → Log Needs}
+\begin{itemize}
+  \item \textbf{Steal:} uncommitted dirty pages CAN go to disk → need \textbf{UNDO}
+  \item \textbf{No-Steal:} can't write uncommitted → no UNDO (big memory)
+  \item \textbf{Force:} flush all at commit → no REDO (slow commits)
+  \item \textbf{No-Force:} don't flush at commit → need \textbf{REDO}
+  \item \textbf{ARIES = Steal + No-Force} → needs \textbf{both UNDO and REDO}
+\end{itemize}
+\key{Undo logs OLD value; redo logs NEW value.} \qref{Fa24 Q1a→A}
+
+\section{ARIES Data Structures}
+\key{Log fields:} LSN, prevLSN, type (UPDATE/CLR/COMMIT/ABORT/END), xactID, pageID, before-image, after-image.
+
+\key{DPT:} pageID → \textbf{recLSN} = LSN of FIRST log that dirtied page since last flush.
+
+\key{Xact Table:} xactID → (status: running/committing/aborting, \textbf{lastLSN})
+
+\key{Key LSNs:}
+\begin{itemize}
+  \item \textbf{pageLSN:} most recent log for this page. In-mem $\ge$ on-disk.
+  \item \textbf{recLSN:} FIRST to dirty since flush (in DPT only).
+  \item \textbf{lastLSN:} last log for a transaction (in Xact Table).
+  \item \textbf{undoNextLSN:} in CLR --- equals prevLSN of record being undone. \qref{Fa24 Q1d→A}
+\end{itemize}
+
+\begin{warnbox}
+recLSN = FIRST to dirty (stays until flushed). pageLSN = MOST RECENT.\\
+lastLSN = last log of a TRANSACTION. pageLSN = last log of a PAGE.
+\end{warnbox}
+
+\section{CLR (Compensation Log Record)}
+\begin{itemize}
+  \item Written DURING undo (normal abort OR recovery undo) \qref{Fa24 Q1c: A,B}
+  \item \warn{NOT written during commit}
+  \item Redo-only (never undone again)
+  \item Flushed BEFORE the actual undo operation applies
+\end{itemize}
+
+\section{Checkpoint}
+\key{Fuzzy:} BEGIN\_CKPT → snapshot DPT+Xact Table → END\_CKPT.\\
+\warn{Always write END\_CKPT, even if both tables empty.}\\
+Multiple END\_CKPTs per BEGIN\_CKPT if tables too large.
+
+\key{Non-fuzzy:} Pause all new TX\_START during snapshot.
+
+\section{ARIES 3 Phases}
+
+\begin{greenbox}
+\textbf{Phase 1 --- Analysis:} Scan from last BEGIN\_CKPT forward.\\
+- On UPDATE: if page not in DPT → add (recLSN=LSN). Update xact lastLSN.\\
+- On COMMIT: status → committing.\\
+- On END: remove from Xact Table.\\
+After: "committing" xacts → write END, remove. Remaining → "aborting" (losers).
+\end{greenbox}
+
+\begin{greenbox}
+\textbf{Phase 2 --- Redo:} Start from \textbf{min(recLSN in DPT)}.\\
+Redo every UPDATE and CLR, SKIP if any of:\\
+(a) Page NOT in DPT.\\
+(b) Log LSN $<$ page's recLSN in DPT.\\
+(c) On-disk pageLSN $\ge$ log's LSN (already applied).
+\end{greenbox}
+
+\begin{greenbox}
+\textbf{Phase 3 --- Undo:} Undo all losers (aborting xacts).\\
+- Max-heap of lastLSNs. Initialize with lastLSNs of all losers.\\
+- Pop max: if UPDATE → write CLR + apply undo, push prevLSN.\\
+- If CLR → push undoNextLSN (skip already-undone record).\\
+- If prevLSN/undoNextLSN null → xact done, write END.
+\end{greenbox}
+
+\begin{ansbox}
+Fa24 Q1d truths:\\
+A: undoNextLSN = prevLSN of record being undone → \ans{T}\\
+B: in-mem pageLSN = on-disk always → \ans{F} (in-mem $\ge$ on-disk)\\
+C: recLSN = LAST to dirty → \ans{F} (it's FIRST)\\
+D: lastLSN = last log for transaction → \ans{T}
+\end{ansbox}
+
+\section{Buffer Policy T/F}
+\begin{itemize}
+  \item Steal+Force: need UNDO (steal). No REDO (force). → \ans{True both}
+  \item No-Steal+Force: need neither UNDO nor REDO.
+  \item CLR flushed AFTER undo op? \ans{F} --- flushed BEFORE
+  \item Non-fuzzy ckpt: no new TX\_START during → \ans{T}
+  \item SAVEPOINT $\ne$ checkpoint (SQL savepoint only)
+\end{itemize}
+
+\section{2-Phase Commit (2PC)}
+\key{Roles:} Coordinator $C$ + Participants $P_i$
+
+\begin{greenbox}
+1. $C$ sends PREPARE to all $P_i$\\
+2. $P_i$: log+flush "prepare", reply YES/NO\\
+3a. All YES: $C$ log+flush COMMIT → send COMMIT → $P_i$ log+flush COMMIT → ACK → $C$ writes END\\
+3b. Any NO: $C$ log ABORT → send ABORT
+\end{greenbox}
+
+\key{Crash Scenarios:} \qref{Fa24 Q1e}
+\begin{itemize}
+  \item $P_i$ after YES → STATUS\_INQUIRY to $C$, \textbf{wait (BLOCKING)}
+  \item $C$ before logging COMMIT → \textbf{ABORT} on recovery
+  \item $C$ after logging COMMIT → \textbf{resend COMMIT} on recovery
+  \item $C$ log EMPTY → \textbf{locally ABORT immediately} → \ans{D}
+\end{itemize}
+
+\begin{ansbox}
+Pressumed Abort benefits \qref{Fa24 Q1f→B}:\\
+\ans{B: No ACKs needed for abort messages → reduces network traffic.}\\
+NOT A (more fault tolerance), NOT D (reduces PREPARE writes)
+\end{ansbox}
+
+\key{2PC BLOCKS} if coordinator fails between PREPARE and COMMIT.
+
+\key{Timing:} Earliest $P_i$ flush = shortest one-way latency + 10ms to log+flush.
+
+\end{multicols*}
+\newpage
+
+% ====================================================================
+%  PAGE 6 — PAXOS + PARALLEL + NOSQL + T/F + STRATEGY
+% ====================================================================
+\begin{multicols*}{4}
+\centerline{\titlefont\textbf{\color{purple!80!black}PAXOS + PARALLEL + NOSQL + RAPID FIRE}}
+\vspace{1pt}
+
+\section{Paxos vs 2PC}
+\key{True for Paxos, NOT for 2PC:} \qref{Fa24 Q1g→B,D}
+\begin{itemize}
+  \item \ans{B: Survives permanent failure of any single node (if majority alive)}
+  \item \ans{D: Non-blocking --- majority proceeds without all nodes}
+\end{itemize}
+\key{False about Paxos:}
+\begin{itemize}
+  \item No majority needed? \ans{F} (requires majority quorum)
+  \item Single coordinator? \ans{F} (any node can propose)
+\end{itemize}
+\key{2PC:} Coordinator-centric. \textbf{Blocking} if $C$ fails. All nodes must agree.
+
+\key{Paxos:} Quorum-based (majority). \textbf{Non-blocking.} Tolerates $< n/2$ failures.
+
+\key{Paxos phases:}\\
+Phase 1a: Proposer → PREPARE(n) to acceptors.\\
+Phase 1b: Acceptors → PROMISE(n) if $n$ is highest; include highest accepted value.\\
+Phase 2a: Proposer → ACCEPT(n, v) with chosen value.\\
+Phase 2b: Acceptors accept if $n$ still highest; inform learners when majority accepts.
+
+\section{Parallel Query Processing (PQP)}
+\key{Architectures:}
+\begin{itemize}
+  \item \textbf{Shared Memory:} all CPUs share RAM. Easy, doesn't scale.
+  \item \textbf{Shared Disk:} separate RAM, shared storage. Medium scale.
+  \item \textbf{Shared Nothing:} own CPU+RAM+disk per node. Best scale; network needed.
+\end{itemize}
+
+\key{Partitioning:}
+\begin{itemize}
+  \item \textbf{Range:} split key range. Good for range queries. Risk: skew.
+  \item \textbf{Hash:} hash(key) mod $N$. Even. No range help.
+  \item \textbf{Round-robin:} perfectly even. Bad for any predicate.
+\end{itemize}
+
+\begin{ansbox}
+Hash partition network cost ($N$ pages, $M$ machines, uniform):\\
+Each page sent to exactly 1 machine. Each sends $(M-1)/M$ of its pages.\\
+\textbf{Total} $= N \times (M-1)/M$ transfers.\\
+Ex: N=888pp, M=4: $888\times3/4=666$ page-transfers. \qref{Sp25 Q7}
+\end{ansbox}
+
+\key{Broadcast Hash Join:} Tiny table → all nodes. Network $= |small| \times (M-1)$.
+
+\section{MapReduce}
+\key{Pipeline:} Map → write to disk → Shuffle/Sort by key → Reduce
+
+\key{True/False:} \qref{Fa24 Q1k}
+\begin{itemize}
+  \item Intermediates always written to disk: \ans{A=T} (fault tolerance)
+  \item Intermediates may stream map→reduce: \ans{B=F}
+  \item Stragglers → speculative backup execution: \ans{C=T}
+  \item More I/O than rookieDB for SQL: \ans{D=T}
+\end{itemize}
+\key{Reducer fails (no straggler opt):} \ans{B} --- only that reducer's data reprocessed. \qref{Fa24 Q1l}
+
+\section{Spark}
+\key{True/False:} \qref{Fa24 Q1m}
+\begin{itemize}
+  \item Lazy execution → whole DAG optimized first: \ans{A=T}
+  \item Higher I/O than MapReduce: \ans{B=F} (Spark has LOWER I/O)
+  \item Lineage (RDD) recomputes lost partitions: \ans{C=T}
+  \item Failure → always restart entire program: \ans{D=F} (lineage avoids)
+\end{itemize}
+
+\section{NoSQL / BASE / OLAP}
+\key{OLAP vs OLTP:} \qref{Fa24 Q1h→A,C}
+\begin{itemize}
+  \item OLAP: inventory forecasting, web traffic analysis → \ans{A, C}
+  \item OLTP: banking transactions, e-commerce cart → \ans{B, D}
+\end{itemize}
+
+\key{BASE properties:} \qref{Fa24 Q1i→A,B,C}
+\begin{itemize}
+  \item \textbf{B}asic Availability: responds even with stale data → \ans{A=T}
+  \item \textbf{S}oft State: state changes over time even w/o input (EC propagation) → \ans{B=T}
+  \item \textbf{E}ventual Consistency: reads may see outdated data until propagated → \ans{C=T}
+  \item D: NOT due to pseudorandom mechanisms → \ans{F}
+\end{itemize}
+
+\key{Semi-structured vs Relational:} \qref{Fa24 Q1j→A}
+\begin{itemize}
+  \item No predefined schema → \ans{A=T}
+  \item Semi-structured is binary? → \ans{B=F} (both text-based)
+  \item Can't map relational→JSON? → \ans{C=F} (can)
+  \item Can't map JSON→relational? → \ans{D=F} (can)
+\end{itemize}
+
+\section{True/False Rapid Fire}
+\key{Sort/Hash:}
+I/O=$2N\times$passes \ans{T} | halving B doubles I/O \ans{F} | 2-pass B$\approx\sqrt{N}$ \ans{T} | hash$\le$sort always \ans{F}
+
+\key{Joins:}
+BNLJ needs equality \ans{F} | smaller outer BNLJ never worse \ans{F} | INLJ always $<$ BNLJ \ans{F} | GHJ = $3([R]+[S])$ baseline \ans{T}
+
+\key{B+ Trees:}
+Full scan = leaf pages only \ans{T} | Alt-1 always clustered \ans{T} | 2 Alt-1 same table \ans{F} | clustered degrades \ans{T}
+
+\key{Concurrency:}
+Strict 2PL stops cascading aborts \ans{T} | plain 2PL stops them \ans{F} | serializable=serial \ans{F} | intent locks auto-grant children \ans{F} | X on table → release child locks \ans{T}
+
+\key{Recovery:}
+ARIES=Steal+No-Force \ans{T} | undo logs old \ans{T} | CLR during commit \ans{F} | CLR flushed BEFORE undo \ans{T} | END\_CKPT always written \ans{T} | recLSN=most recent \ans{F} (FIRST!)
+
+\key{2PC/Paxos:}
+2PC blocking \ans{T} | Paxos non-blocking \ans{T} | Paxos needs majority \ans{T} | presumed abort saves ACKs \ans{T}
+
+\key{MapReduce/Spark:}
+MR intermediates to disk \ans{T} | Spark less I/O than MR \ans{T} | reducer fail=restart job \ans{F} | lineage avoids restart \ans{T}
+
+\section{Exam Strategy}
+\begin{enumerate}
+  \item \key{Pass 1:} T/F and known MC instantly. Skip $>$3min/pt.
+  \item \key{Pass 2:} Calculations. \warn{Write formula FIRST} = partial credit.
+  \item \key{Pass 3:} 30s left → guess EVERYTHING remaining. No MC penalty.
+  \item All I/Os are \textbf{integers}. 1.04 I/Os = 2. 1KB=1024B.
+  \item Simplify to integers --- log form penalized.
+  \item Join orders: LEFT-DEEP only. No cross products.
+  \item CLR: write FIRST, then apply undo.
+  \item SQL outer join filter: WHERE goes inside subquery before join.
+\end{enumerate}
+
+\end{multicols*}
+\end{document}
